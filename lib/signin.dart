@@ -4,6 +4,7 @@ import 'package:flutter/painting.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
 import 'package:learnanearnapp/signup.dart';
+import 'package:learnanearnapp/Home/HomePage.dart';
 
 class SignInPage extends StatefulWidget {
   const SignInPage({super.key});
@@ -21,6 +22,7 @@ class _SignInPageState extends State<SignInPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       backgroundColor: const Color(0xfffafafa),
       body: GestureDetector(
         onTap: () {
@@ -247,7 +249,9 @@ class _SignInPageState extends State<SignInPage> {
   void signIn() async {
     if (_formKey.currentState!.validate()) {
       Map signInDetails = {"email": email, "password": password};
-
+      Navigator.of(context).push(MaterialPageRoute(
+        builder: (context) => const HomePage(),
+      ));
       print(signInDetails);
     }
   }
