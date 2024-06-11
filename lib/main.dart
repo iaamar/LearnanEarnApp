@@ -2,12 +2,18 @@ import 'dart:async';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:learnanearnapp/signin.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:learnanearnapp/utils.dart';
 import 'firebase_options.dart';
 import 'home.dart';
 
+void main() async {
+  await dotenv.load(fileName: ".env");
+  Stripe.publishableKey = dotenv.env['PUBLISHABLE_KEY']!;
+  await Stripe.instance.applySettings();
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
@@ -23,7 +29,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'Flutter Demo',
+    title: 'LearnAnEarn',
       theme: ThemeData(
         fontFamily: 'Poppins',
         useMaterial3: true,
@@ -92,3 +98,4 @@ class _SplashScreenState extends State<SplashScreen> {
     }
   }
 }
+
