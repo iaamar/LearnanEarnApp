@@ -8,15 +8,14 @@ class LAEUser {
     required this.created});
 
   LAEUser.fromJson(Map<String, Object?> json) :this(
-    created: DateTime.fromMillisecondsSinceEpoch(json["created"]),
-    uid: json["uid"].toString(),
-    name: json["name"].toString(),
+          created: DateTime.fromMillisecondsSinceEpoch(json["created"]! as int),
+          uid: json["uid"].toString(),
+          name: json["name"].toString(),
     email: json["email"].toString(),
-  )
+        );
 
   @override
   String toString() {
-    return 'Person(name: $name, email: $email, created: ${created
-        .toIso8601String()})';
+    return "Person(name: $name, email: $email, created: ${created.toIso8601String()})";
   }
 }
