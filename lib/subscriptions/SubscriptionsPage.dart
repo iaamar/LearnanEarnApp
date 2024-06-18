@@ -4,7 +4,6 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
 
 class SubscriptionsPage extends StatelessWidget {
@@ -238,7 +237,7 @@ class StripePaymentHandle {
       displayPaymentSheet();
     } catch (e) {
       print(e.toString());
-      Fluttertoast.showToast(msg: e.toString());
+      print(e.toString());
     }
   }
 
@@ -247,12 +246,13 @@ class StripePaymentHandle {
       // 3. display the payment sheet.
       await Stripe.instance.presentPaymentSheet();
 
-      Fluttertoast.showToast(msg: 'Payment succesfully completed');
+      print('Payment succesfully completed');
     } on Exception catch (e) {
       if (e is StripeException) {
-        Fluttertoast.showToast(msg: '${e.error.localizedMessage}');
+        print('${e.error.localizedMessage}');
+
       } else {
-        Fluttertoast.showToast(msg: 'Unforeseen error: ${e}');
+        print('Unforeseen error: ${e}');
       }
     }
   }
