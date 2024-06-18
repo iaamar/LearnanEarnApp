@@ -1,8 +1,15 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
+import 'package:gap/gap.dart';
+import 'package:google_sign_in/google_sign_in.dart';
+import 'package:learnanearnapp/home.dart';
+import 'package:learnanearnapp/utils.dart';
 
 class SignUpPage extends StatefulWidget {
   const SignUpPage({super.key});
@@ -24,6 +31,7 @@ class _SignUpPageState extends State<SignUpPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       backgroundColor: const Color(0xfffafafa),
       body: GestureDetector(
         onTap: () {
@@ -32,16 +40,20 @@ class _SignUpPageState extends State<SignUpPage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
+            const Gap(36),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 const BackButton(),
                 Hero(
                   tag: "logo",
-                  child: Image.asset(
-                    "assets/images/logo.png",
-                    fit: BoxFit.cover,
-                    width: 200,
+                  child: Padding(
+                    padding: const EdgeInsets.fromLTRB(0, 0, 8, 0),
+                    child: Image.asset(
+                      "assets/images/logo.png",
+                      fit: BoxFit.cover,
+                      width: 150,
+                    ),
                   ),
                 ),
               ],
@@ -211,12 +223,15 @@ class _SignUpPageState extends State<SignUpPage> {
                             mainAxisAlignment: MainAxisAlignment.start,
                             children: [
                               Checkbox(
-                                  value: acceptedTnC,
-                                  onChanged: (v) {
-                                    setState(() {
-                                      acceptedTnC = true;
-                                    });
-                                  }),
+                                visualDensity: const VisualDensity(
+                                    horizontal: -4, vertical: -4),
+                                value: acceptedTnC,
+                                onChanged: (v) {
+                                  setState(() {
+                                    acceptedTnC = v!;
+                                  });
+                                },
+                              ),
                               const Text(
                                 "I understand the",
                                 style: TextStyle(
@@ -227,7 +242,7 @@ class _SignUpPageState extends State<SignUpPage> {
                                   print("Go To t&c");
                                 },
                                 child: const Text(
-                                  " terms & policy.",
+                                  " t&c.",
                                   style: TextStyle(
                                       color: Color(0xffB297F7), fontSize: 16),
                                 ),
@@ -273,32 +288,42 @@ class _SignUpPageState extends State<SignUpPage> {
                               mainAxisSize: MainAxisSize.max,
                               children: [
                                 Expanded(
-                                  child: Container(
-                                    height: 42,
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(6),
-                                      color: const Color(0xfff4f4f4),
+                                  child: InkWell(
+                                    onTap: () {
+                                      signInWithGoogle();
+                                    },
+                                    child: Container(
+                                      height: 42,
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(6),
+                                        color: const Color(0xfff4f4f4),
+                                      ),
+                                      padding: const EdgeInsets.symmetric(
+                                          vertical: 8),
+                                      child: Image.asset(
+                                          "assets/images/google_sign_in_logo.png"),
                                     ),
-                                    padding:
-                                        const EdgeInsets.symmetric(vertical: 8),
-                                    child: Image.asset(
-                                        "assets/images/google_sign_in_logo.png"),
                                   ),
                                 ),
                                 const SizedBox(
                                   width: 8,
                                 ),
                                 Expanded(
-                                  child: Container(
-                                    height: 42,
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(6),
-                                      color: const Color(0xfff4f4f4),
+                                  child: InkWell(
+                                    onTap: () {
+                                      signInWithFacebook();
+                                    },
+                                    child: Container(
+                                      height: 42,
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(6),
+                                        color: const Color(0xfff4f4f4),
+                                      ),
+                                      padding: const EdgeInsets.symmetric(
+                                          vertical: 8),
+                                      child: Image.asset(
+                                          "assets/images/facebook_sign_in_logo.png"),
                                     ),
-                                    padding:
-                                        const EdgeInsets.symmetric(vertical: 8),
-                                    child: Image.asset(
-                                        "assets/images/facebook_sign_in_logo.png"),
                                   ),
                                 ),
                                 const SizedBox(
@@ -366,13 +391,234 @@ class _SignUpPageState extends State<SignUpPage> {
 
   void signUp() async {
     if (_formKey.currentState!.validate()) {
-      Map signUpDetails = {
-        "email": email,
+      Utils.showLoadingDialog(context, "Building your career launchpad...");
+      print({"email": email,
         "password": confirmPassword,
-        "name": name
-      };
+        "name": name});
 
-      print(signUpDetails);
+      try {
+        final credential =
+            await FirebaseAuth.instance.createUserWithEmailAndPassword(
+          email: email,
+          password: confirmPassword,
+        );
+        if (credential.user != null) {
+          await credential.user!.updateDisplayName(name);
+          await FirebaseFirestore.instance
+              .collection("users")
+              .doc(credential.user!.uid)
+              .set({
+            "email": email,
+            "uid": credential.user!.uid,
+            "name": name,
+            "created": Timestamp.now()
+          }).then((v) {
+            Navigator.pushAndRemoveUntil(
+              context,
+              Utils.createRoute(DummyHome(), Utils.DTU),
+              (route) => false,
+            );
+          }, onError: (e) {
+            print(e);
+            Navigator.pop(context);
+            Utils.showdialog(context, "Oh no!!",
+                "Something went wrong. Don't Worry! Your account has been created.");
+          });
+        } else {
+          Navigator.pop(context);
+          Utils.showdialog(context, "Oh no!!", "Let's try this again.");
+        }
+      } on FirebaseAuthException catch (e) {
+        Navigator.pop(context);
+        if (e.code == 'weak-password') {
+          print('The password provided is too weak.');
+          Utils.showdialog(
+              context, "Weak Password", "Please choose a strong password.");
+        } else if (e.code == 'email-already-in-use') {
+          print('The account already exists for that email.');
+          Utils.showdialog(
+              context, "Email already exists", "Please try another email.");
+        } else if (e.code == 'invalid-email') {
+          print('Invalid email.');
+          Utils.showdialog(
+              context, "Email invalid", "Please try another email.");
+        } else {
+          print('${e.code}: ${e.message}');
+          Utils.showdialog(
+              context, "Something went wrong.", "Please try again.");
+        }
+      } catch (e) {
+        print(e);
+      }
+    }
+  }
+
+  signInWithGoogle() async {
+    try {
+      Utils.showLoadingDialog(context, "Signing In...");
+      final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
+
+      final GoogleSignInAuthentication? googleAuth =
+          await googleUser?.authentication;
+
+      final gCredential = GoogleAuthProvider.credential(
+        accessToken: googleAuth?.accessToken,
+        idToken: googleAuth?.idToken,
+      );
+
+      final credential =
+          await FirebaseAuth.instance.signInWithCredential(gCredential);
+
+      if (credential.user != null) {
+        FirebaseFirestore.instance
+            .collection("users")
+            .doc(credential.user!.uid)
+            .get()
+            .then((v) async {
+          if (v.exists) {
+            Navigator.pushAndRemoveUntil(
+              context,
+              Utils.createRoute(DummyHome(), Utils.DTU),
+              (route) => false,
+            );
+          } else {
+            await FirebaseFirestore.instance
+                .collection("users")
+                .doc(credential.user!.uid)
+                .set(
+              {
+                "email": credential.user!.email,
+                "uid": credential.user!.uid,
+                "name": credential.user!.displayName,
+                "created": Timestamp.now()
+              },
+            ).then((v) {
+              Navigator.pushAndRemoveUntil(
+                context,
+                Utils.createRoute(DummyHome(), Utils.DTU),
+                (route) => false,
+              );
+            }, onError: (e) {
+              print(e);
+              Navigator.pop(context);
+              Utils.showdialog(context, "Oh no!!",
+                  "Something went wrong. Don't Worry! Your account has been created.");
+            });
+          }
+        });
+      } else {
+        Navigator.pop(context);
+        Utils.showdialog(context, "Oh no!!", "Let's try this again.");
+      }
+    } on FirebaseAuthException catch (e) {
+      Navigator.pop(context);
+      switch (e.code) {
+        case 'invalid-credential':
+          print('Error: Invalid credentials');
+          Utils.showdialog(
+              context, "", "Something went wrong. Please try again.");
+          break;
+        case 'user-disabled':
+          print('Error: User account disabled');
+          Utils.showdialog(context, "",
+              "Something is wrong with the account. Please try another way.");
+          break;
+        case 'account-exists-with-different-credential':
+          print('Error: Account exists with different credential');
+          Utils.showdialog(
+              context, "", "Something went wrong. Please try again.");
+          break;
+        default:
+          print('Error: ${e.message}');
+          Utils.showdialog(
+              context, "", "Something went wrong. Please try again.");
+      }
+    } catch (e) {
+      Navigator.pop(context);
+      print('Error: ${e}');
+      Utils.showdialog(context, "", "Something went wrong. Please try again.");
+    }
+  }
+
+  signInWithFacebook() async {
+    try {
+      Utils.showLoadingDialog(context, "Signing In...");
+      final LoginResult loginResult = await FacebookAuth.instance.login();
+
+      final OAuthCredential facebookAuthCredential =
+          FacebookAuthProvider.credential(loginResult.accessToken!.tokenString);
+
+      final credential = await FirebaseAuth.instance
+          .signInWithCredential(facebookAuthCredential);
+
+      if (credential.user != null) {
+        FirebaseFirestore.instance
+            .collection("users")
+            .doc(credential.user!.uid)
+            .get()
+            .then((v) async {
+          if (v.exists) {
+            Navigator.pushAndRemoveUntil(
+              context,
+              Utils.createRoute(DummyHome(), Utils.DTU),
+              (route) => false,
+            );
+          } else {
+            await FirebaseFirestore.instance
+                .collection("users")
+                .doc(credential.user!.uid)
+                .set(
+              {
+                "email": credential.user!.email,
+                "uid": credential.user!.uid,
+                "name": credential.user!.displayName,
+                "created": Timestamp.now()
+              },
+            ).then((v) {
+              Navigator.pushAndRemoveUntil(
+                context,
+                Utils.createRoute(DummyHome(), Utils.DTU),
+                (route) => false,
+              );
+            }, onError: (e) {
+              print(e);
+              Navigator.pop(context);
+              Utils.showdialog(context, "Oh no!!",
+                  "Something went wrong. Don't Worry! Your account has been created.");
+            });
+          }
+        });
+      } else {
+        Navigator.pop(context);
+        Utils.showdialog(context, "Oh no!!", "Let's try this again.");
+      }
+    } on FirebaseAuthException catch (e) {
+      Navigator.pop(context);
+      switch (e.code) {
+        case 'invalid-credential':
+          print('Error: Invalid credentials');
+          Utils.showdialog(
+              context, "", "Something went wrong. Please try again.");
+          break;
+        case 'user-disabled':
+          print('Error: User account disabled');
+          Utils.showdialog(context, "",
+              "Something is wrong with the account. Please try another way.");
+          break;
+        case 'account-exists-with-different-credential':
+          print('Error: Account exists with different credential');
+          Utils.showdialog(
+              context, "", "Something went wrong. Please try again.");
+          break;
+        default:
+          print('Error: ${e.message}');
+          Utils.showdialog(
+              context, "", "Something went wrong. Please try again.");
+      }
+    } catch (e) {
+      Navigator.pop(context);
+      print('Error: ${e}');
+      Utils.showdialog(context, "", "Something went wrong. Please try again.");
     }
   }
 }

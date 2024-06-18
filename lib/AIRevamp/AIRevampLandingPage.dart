@@ -1,5 +1,3 @@
-
-
 import 'package:flutter/material.dart';
 import 'package:learnanearnapp/AIRevamp/AIRevampHomePage.dart';
 import 'package:learnanearnapp/Styles.dart';
@@ -40,8 +38,9 @@ class AirevampLandingPage extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
                 Image.asset(
-                  'assets/images/ai-revamp3.png', // Replace with your image asset path
-                  height: 300,  
+                  'assets/images/ai-revamp3.png',
+                  // Replace with your image asset path
+                  height: 300,
                   width: windowHeight * 0.5,
                   fit: BoxFit.cover,
                 ),
@@ -66,7 +65,10 @@ class AirevampLandingPage extends StatelessWidget {
                 const SizedBox(height: 16),
                 GestureDetector(
                   onTap: () {
-                    Navigator.push(context, MaterialPageRoute(builder: (context) =>  AIRevampHomePage()));
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => AIRevampHomePage()));
                   },
                   child: Container(
                     width: MediaQuery.of(context).size.width * 0.8,

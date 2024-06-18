@@ -37,7 +37,8 @@ class InterviewQLandingPage extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
                 Image.asset(
-                  'assets/downloadman.png', // Replace with your image asset path
+                  'assets/downloadman.png',
+                  // Replace with your image asset path
                   height: 400,
                   fit: BoxFit.cover,
                 ),

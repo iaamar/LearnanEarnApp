@@ -48,14 +48,15 @@ class JobDetailPage extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                     Row(
+                    Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                      IconButton(
-                        // ignore: prefer_const_constructors
-                        onPressed: (){
-                          Navigator.pop(context);
-                        }, icon: Icon(Icons.arrow_back)),
+                        IconButton(
+                            // ignore: prefer_const_constructors
+                            onPressed: () {
+                              Navigator.pop(context);
+                            },
+                            icon: Icon(Icons.arrow_back)),
                         Icon(Icons.favorite_border),
                       ],
                     ),
