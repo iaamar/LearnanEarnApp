@@ -4,7 +4,6 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
 
 class SubscriptionsPage extends StatelessWidget {
@@ -181,7 +180,8 @@ class SubscriptionsPage extends StatelessWidget {
               children: [
                 Text(
                   title,
-                  style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  style: const TextStyle(
+                      fontSize: 18, fontWeight: FontWeight.bold),
                 ),
                 const SizedBox(height: 8),
                 Text(
@@ -191,28 +191,29 @@ class SubscriptionsPage extends StatelessWidget {
                 const SizedBox(height: 8),
                 ...features.map((feature) => Text('• $feature')).toList(),
                 const SizedBox(height: 16),
-                
               ],
             ),
-Center(
-                  child: GestureDetector(
-                    
-                      onTap: () async {
-                        await StripePaymentHandle()
-                            .stripeMakePayment(price.toString());
-                      },
-                      child: Container(
-                        width: windowWidth * 0.4,
-                        height: windowWidth * 0.11,
-                        padding: const EdgeInsets.all(12),
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(10),
-                          border: Border.all(color: Colors.black,width: 0.8),
-                        ),
-                        child: const Center(child:  Text('Subscribe',style: TextStyle(fontSize: 16),)))),
-                ),
-
+            Center(
+              child: GestureDetector(
+                  onTap: () async {
+                    await StripePaymentHandle()
+                        .stripeMakePayment(price.toString());
+                  },
+                  child: Container(
+                      width: windowWidth * 0.4,
+                      height: windowWidth * 0.11,
+                      padding: const EdgeInsets.all(12),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(10),
+                        border: Border.all(color: Colors.black, width: 0.8),
+                      ),
+                      child: const Center(
+                          child: Text(
+                        'Subscribe',
+                        style: TextStyle(fontSize: 16),
+                      )))),
+            ),
           ],
         ),
       ),
@@ -236,7 +237,7 @@ class StripePaymentHandle {
       displayPaymentSheet();
     } catch (e) {
       print(e.toString());
-      Fluttertoast.showToast(msg: e.toString());
+      print(e.toString());
     }
   }
 
@@ -245,13 +246,12 @@ class StripePaymentHandle {
       // 3. display the payment sheet.
       await Stripe.instance.presentPaymentSheet();
 
-      Fluttertoast.showToast(msg: 'Payment succesfully completed');
+      print('Payment succesfully completed');
     } on Exception catch (e) {
       if (e is StripeException) {
-        Fluttertoast.showToast(
-            msg: '${e.error.localizedMessage}');
+        print('${e.error.localizedMessage}');
       } else {
-        Fluttertoast.showToast(msg: 'Unforeseen error: ${e}');
+        print('Unforeseen error: ${e}');
       }
     }
   }

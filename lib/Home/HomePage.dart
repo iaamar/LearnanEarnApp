@@ -136,11 +136,7 @@ class HomePage extends StatelessWidget {
                           child: const Row(
                             mainAxisSize: MainAxisSize.min,
                             children: [
-                              Icon(
-                                Icons.auto_awesome, // Using a similar icon
-                                color: Colors.white,
-                                size: 18,
-                              ),
+                            Icon(Icons.auto_awesome),
                             Text(" AI Revamp", style: TextStyle(color: Colors.white),),
                             ],
                           ),
