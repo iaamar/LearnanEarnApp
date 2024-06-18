@@ -250,6 +250,7 @@ class StripePaymentHandle {
     } on Exception catch (e) {
       if (e is StripeException) {
         print('${e.error.localizedMessage}');
+
       } else {
         print('Unforeseen error: ${e}');
       }

@@ -126,8 +126,7 @@ class HomePage extends StatelessWidget {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) =>
-                                  const AirevampLandingPage(),
+                              builder: (context) => const AirevampLandingPage(),
                             ),
                           );
                         },
@@ -136,8 +135,15 @@ class HomePage extends StatelessWidget {
                           child: const Row(
                             mainAxisSize: MainAxisSize.min,
                             children: [
-                            Icon(Icons.auto_awesome),
-                            Text(" AI Revamp", style: TextStyle(color: Colors.white),),
+                              Icon(
+                                Icons.auto_awesome, // Using a similar icon
+                                color: Colors.white,
+                                size: 18,
+                              ),
+                              Text(
+                                " AI Revamp",
+                                style: TextStyle(color: Colors.white),
+                              ),
                             ],
                           ),
                         ),
@@ -162,7 +168,10 @@ class HomePage extends StatelessWidget {
                                 color: Colors.white,
                                 size: 18,
                               ),
-                              Text(" AI InterviewQ", style: TextStyle(color: Colors.white),),
+                              Text(
+                                " AI InterviewQ",
+                                style: TextStyle(color: Colors.white),
+                              ),
                             ],
                           ),
                         ),
