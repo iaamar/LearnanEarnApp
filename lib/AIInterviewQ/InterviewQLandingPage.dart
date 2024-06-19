@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:learnanearnapp/Styles.dart';
 
+import 'InterviewQHomePage.dart';
+
 class InterviewQLandingPage extends StatelessWidget {
   const InterviewQLandingPage({super.key});
 
@@ -63,8 +65,8 @@ class InterviewQLandingPage extends StatelessWidget {
                 const SizedBox(height: 16),
                 GestureDetector(
                   onTap: () {
-                    // Handle explore button tap
-                    print('Explore button tapped');
+                    Navigator.of(context).push(MaterialPageRoute(
+                        builder: (builder) => InterviewQHomePage()));
                   },
                   child: Container(
                     width: MediaQuery.of(context).size.width * 0.8,

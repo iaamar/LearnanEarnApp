@@ -30,20 +30,25 @@ class _AIRevampHomePageState extends State<AIRevampHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Scaffold(
-        appBar: AppBar(
-          backgroundColor: Colors.transparent,
-          leading: IconButton(
-            icon: const Icon(
-              Icons.arrow_back,
-              color: Colors.black,
-            ),
-            onPressed: () => Navigator.of(context).pop(false),
+    double windowWidth = MediaQuery.of(context).size.width;
+    double windowHeight = MediaQuery.of(context).size.height;
+    return Scaffold(
+      backgroundColor: Colors.white,
+      extendBodyBehindAppBar: true,
+      appBar: AppBar(
+        backgroundColor: Colors.white,
+        leading: IconButton(
+          icon: const Icon(
+            Icons.arrow_back,
+            color: Colors.black,
           ),
+          onPressed: () => Navigator.of(context).pop(false),
         ),
-        body: Padding(
-          padding: const EdgeInsets.fromLTRB(20, 20, 20, 60),
+      ),
+      body: SafeArea(
+        child: Padding(
+          padding: EdgeInsets.fromLTRB(windowWidth * 0.08, windowWidth * 0.02,
+              windowWidth * 0.08, windowWidth * 0.15),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -61,32 +66,71 @@ class _AIRevampHomePageState extends State<AIRevampHomePage> {
                 alignment: Alignment.center,
                 child: GestureDetector(
                   onTap: () {
+                    // Add your code here
+                    FocusManager.instance.primaryFocus?.unfocus();
+
                     _pickFile();
+                    print("uploading file...");
                   },
                   child: Container(
-                    width: MediaQuery.of(context).size.width * 0.8,
-                    height: MediaQuery.of(context).size.height * 0.4,
+                    width: windowWidth * 0.8,
+                    height: windowHeight * 0.3,
                     decoration: BoxDecoration(
                       color: const Color(0xFFECECEC),
                       borderRadius: BorderRadius.circular(10),
                     ),
-                    child: const Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      crossAxisAlignment: CrossAxisAlignment.center,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      mainAxisSize: MainAxisSize.max,
                       children: [
-                        Text(
-                          'Drag and Drop or Browse File',
+                        const Text(
+                          'Upload Resume',
                           style: TextStyle(
                             fontSize: 14,
                             color: Colors.black,
                           ),
                         ),
-                        Icon(Icons.upload_file, size: 60, color: Colors.black),
-                        Text("Limit 200MB - PDF")
+                        SizedBox(height: windowHeight * 0.03),
+                        const Icon(Icons.file_upload,
+                            color: Colors.black, size: 50),
+                        SizedBox(height: windowHeight * 0.03),
+                        const Text(
+                          "Limit 200MB - PDF",
+                          style: TextStyle(fontSize: 14, color: Colors.black),
+                        ),
                       ],
                     ),
                   ),
                 ),
+
+                // GestureDetector(
+                //   onTap: () {
+                //     _pickFile();
+                //   },
+                //   child: Container(
+                //     width: MediaQuery.of(context).size.width * 0.8,
+                //     height: MediaQuery.of(context).size.height * 0.4,
+                //     decoration: BoxDecoration(
+                //       color: const Color(0xFFECECEC),
+                //       borderRadius: BorderRadius.circular(10),
+                //     ),
+                //     child: const Column(
+                //       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                //       crossAxisAlignment: CrossAxisAlignment.center,
+                //       children: [
+                //         Text(
+                //           'Drag and Drop or Browse File',
+                //           style: TextStyle(
+                //             fontSize: 14,
+                //             color: Colors.black,
+                //           ),
+                //         ),
+                //         Icon(Icons.upload_file, size: 60, color: Colors.black),
+                //         Text("Limit 200MB - PDF")
+                //       ],
+                //     ),
+                //   ),
+                // ),
               ),
               const Spacer(),
               Row(
@@ -176,7 +220,7 @@ class _AIRevampHomePageState extends State<AIRevampHomePage> {
                 alignment: Alignment.center,
                 child: GestureDetector(
                   child: Container(
-                    width: MediaQuery.of(context).size.width * 0.8,
+                    width: MediaQuery.of(context).size.width,
                     padding: const EdgeInsets.symmetric(
                         horizontal: 24, vertical: 12),
                     decoration: BoxDecoration(

@@ -160,62 +160,60 @@ class SubscriptionsPage extends StatelessWidget {
   Widget _buildPlanCard(BuildContext context, String title, int price,
       String duration, List<String> features, Color first, Color last) {
     double windowWidth = MediaQuery.of(context).size.width;
-    return Expanded(
-      child: Container(
-        margin: const EdgeInsets.symmetric(horizontal: 4),
-        padding: const EdgeInsets.all(16),
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            colors: [first, last],
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 4),
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          colors: [first, last],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+        borderRadius: BorderRadius.circular(10),
+      ),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                title,
+                style: const TextStyle(
+                    fontSize: 18, fontWeight: FontWeight.bold),
+              ),
+              const SizedBox(height: 8),
+              Text(
+                price.toString() + " " + duration,
+                style: const TextStyle(fontSize: 16),
+              ),
+              const SizedBox(height: 8),
+              ...features.map((feature) => Text('• $feature')).toList(),
+              const SizedBox(height: 16),
+            ],
           ),
-          borderRadius: BorderRadius.circular(10),
-        ),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  title,
-                  style: const TextStyle(
-                      fontSize: 18, fontWeight: FontWeight.bold),
-                ),
-                const SizedBox(height: 8),
-                Text(
-                  price.toString() + " " + duration,
-                  style: const TextStyle(fontSize: 16),
-                ),
-                const SizedBox(height: 8),
-                ...features.map((feature) => Text('• $feature')).toList(),
-                const SizedBox(height: 16),
-              ],
-            ),
-            Center(
-              child: GestureDetector(
-                  onTap: () async {
-                    await StripePaymentHandle()
-                        .stripeMakePayment(price.toString());
-                  },
-                  child: Container(
-                      width: windowWidth * 0.4,
-                      height: windowWidth * 0.11,
-                      padding: const EdgeInsets.all(12),
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(10),
-                        border: Border.all(color: Colors.black, width: 0.8),
-                      ),
-                      child: const Center(
-                          child: Text(
-                        'Subscribe',
-                        style: TextStyle(fontSize: 16),
-                      )))),
-            ),
-          ],
-        ),
+          Center(
+            child: GestureDetector(
+                onTap: () async {
+                  await StripePaymentHandle()
+                      .stripeMakePayment(price.toString());
+                },
+                child: Container(
+                    width: windowWidth * 0.4,
+                    height: windowWidth * 0.11,
+                    padding: const EdgeInsets.all(12),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(10),
+                      border: Border.all(color: Colors.black, width: 0.8),
+                    ),
+                    child: const Center(
+                        child: Text(
+                          'Subscribe',
+                          style: TextStyle(fontSize: 16),
+                        )))),
+          ),
+        ],
       ),
     );
   }
@@ -230,7 +228,7 @@ class StripePaymentHandle {
       await Stripe.instance.initPaymentSheet(
           paymentSheetParameters: SetupPaymentSheetParameters(
               paymentIntentClientSecret:
-                  paymentIntent!['client_secret'], //Gotten from payment intent
+              paymentIntent!['client_secret'], //Gotten from payment intent
               style: ThemeMode.dark,
               merchantDisplayName: 'LearnanEarn'));
       //STEP 3: Display Payment sheet
